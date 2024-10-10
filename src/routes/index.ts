@@ -13,6 +13,7 @@ import {
   createProject,
   updateProject,
   deleteProject,
+  getProjectById,
 } from "../controllers/projects.js";
 
 import {
@@ -35,9 +36,11 @@ router.delete("/skills/:id", deleteSkill);
 
 /*________________ Projects ______________*/
 router.get("/projects", getProjects);
+router.get("/projects/:id", getProjectById);
 router.post("/projects", createProject);
 router.patch("/projects/:id", updateProject);
 router.delete("/projects/:id", deleteProject);
+
 
 /*________________ Messages ______________*/
 router.get("/message", getMessages);

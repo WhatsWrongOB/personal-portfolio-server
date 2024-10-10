@@ -1,4 +1,4 @@
-import ProjectModel from "../models/project.js";
+import Project from "../models/project.js";
 /**
  * Get all projects from the database.
  *
@@ -10,7 +10,7 @@ import ProjectModel from "../models/project.js";
  */
 const getProjects = async (req, res, next) => {
     try {
-        const projects = await ProjectModel.find();
+        const projects = await Project.find();
         if (!projects || projects.length === 0) {
             throw new Error("No projects found");
         }
@@ -18,6 +18,31 @@ const getProjects = async (req, res, next) => {
             success: true,
             totalProjects: projects.length,
             projects,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+};
+/**
+ * Get ID project from the database.
+ *
+ * @function getProjectById
+ * @param {Request} req - Express request object
+ * @param {Response} res - Express response object
+ * @param {NextFunction} next - Express next middleware function
+ * @returns {Promise<void>} - Returns a list of projects or an error message
+ */
+const getProjectById = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const project = await Project.findById(id);
+        if (!project) {
+            throw new Error("No projects found");
+        }
+        res.status(200).json({
+            success: true,
+            project,
         });
     }
     catch (error) {
@@ -39,7 +64,7 @@ const createProject = async (req, res, next) => {
         if (!image || !name || !type || !tech || !description || !link) {
             throw new Error("All fields are required");
         }
-        const newProject = await ProjectModel.create({
+        const newProject = await Project.create({
             image,
             name,
             type,
@@ -66,7 +91,7 @@ const updateProject = async (req, res, next) => {
     try {
         const { id } = req.params;
         const { image, name, type, tech, description, link } = req.body;
-        const updatedProject = await ProjectModel.findByIdAndUpdate(id, { image, name, type, tech, description, link }, { new: true, runValidators: true });
+        const updatedProject = await Project.findByIdAndUpdate(id, { image, name, type, tech, description, link }, { new: true, runValidators: true });
         if (!updatedProject) {
             throw new Error("Project not found");
         }
@@ -88,7 +113,7 @@ const updateProject = async (req, res, next) => {
 const deleteProject = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const deletedProject = await ProjectModel.findByIdAndDelete(id);
+        const deletedProject = await Project.findByIdAndDelete(id);
         if (!deletedProject) {
             throw new Error("Project not found");
         }
@@ -98,4 +123,4 @@ const deleteProject = async (req, res, next) => {
         next(error);
     }
 };
-export { getProjects, createProject, updateProject, deleteProject };
+export { getProjects, createProject, updateProject, deleteProject, getProjectById };
