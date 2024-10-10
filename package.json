@@ -6,8 +6,10 @@
   "type": "module",
   "scripts": {
     "start": "node dist/index.js",
-    "dev": "tsc --watch",
-    "build": "tsc"
+    "dev": "node dist/index.js",
+    "build": "rimraf dist && tsc",
+    "ts.check": "tsc --project tsconfig.json",
+    "add-build": "git add dist"
   },
   "license": "ISC",
   "dependencies": {
@@ -19,8 +21,10 @@
   "devDependencies": {
     "@types/cors": "2.8.17",
     "@types/express": "5.0.0",
+    "@types/mongoose": "^5.11.96",
     "@types/node": "22.7.5",
     "nodemon": "3.1.7",
+    "rimraf": "^5.0.10",
     "typescript": "5.6.3"
   }
 }
