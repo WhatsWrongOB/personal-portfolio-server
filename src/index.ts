@@ -4,7 +4,6 @@ import mongoose from "mongoose";
 import router from "./routes/index.js";
 import express, { Request, NextFunction, Response, Application } from "express";
 
-
 /* @** Intializing Express */
 
 const app: Application = express();
@@ -13,32 +12,32 @@ const app: Application = express();
 
 dotenv.config();
 app.use(express.json({ limit: "10mb" }));
+app.use(cors({ origin: "*", credentials: true }));
 
 /* @** CORS configuration */
 
-const allowedOrigins: string[] = [
-  "http://localhost:5500",
-  "http://localhost:5173/",
-  "https://obaidbro.netlify.app",
-  "https://acdemicdashboard.netlify.app",
-];
+// const allowedOrigins: string[] = [
+//   "http://localhost:5500",
+//   "http://localhost:5173/",
+//   "https://obaidbro.netlify.app",
+//   "https://acdemicdashboard.netlify.app",
+// ];
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    methods: "GET, POST, PUT, DELETE, PATCH, OPTIONS",
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
-    exposedHeaders: ["Set-Cookie"],
-  })
-);
-
+// app.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       if (!origin || allowedOrigins.includes(origin)) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("Not allowed by CORS"));
+//       }
+//     },
+//     methods: "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+//     credentials: true,
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//     exposedHeaders: ["Set-Cookie"],
+//   })
+// );
 
 /* @** Routes */
 
@@ -47,7 +46,6 @@ app.get("/", async (req: Request, res: Response) => {
 });
 
 app.use("/api", router);
-
 
 /* @** Mongo connection & Server */
 
