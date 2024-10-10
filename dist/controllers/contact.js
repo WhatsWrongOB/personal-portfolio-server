@@ -44,7 +44,7 @@ const createMessage = async (req, res, next) => {
             email,
             message,
         });
-        res.status(201).json({ success: true, newMessage });
+        res.status(201).json({ success: true });
     }
     catch (error) {
         next(error);

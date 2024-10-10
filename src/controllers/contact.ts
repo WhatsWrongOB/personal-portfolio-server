@@ -49,7 +49,7 @@ const createMessage = async (req: Request, res: Response, next: NextFunction): P
       message,
     });
 
-    res.status(201).json({ success: true, newMessage });
+    res.status(201).json({ success: true });
   } catch (error) {
     next(error);
   }
