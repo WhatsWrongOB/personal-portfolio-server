@@ -18,8 +18,9 @@ app.use(express.json({ limit: "10mb" }));
 
 const allowedOrigins: string[] = [
   "http://localhost:5500",
-  "http://localhost:5173",
+  "http://localhost:5173/",
   "https://obaidbro.netlify.app",
+  "https://acdemicdashboard.netlify.app",
 ];
 
 app.use(

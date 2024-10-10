@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import Contact from "../models/contact.js"; // Assuming the model is saved as message.ts
+import Contact from "../models/contact.js"; 
 
 /**
  * Get all messages from the database.
