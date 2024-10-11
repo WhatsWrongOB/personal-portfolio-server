@@ -72,7 +72,7 @@ const createProject = async (req, res, next) => {
             description,
             link,
         });
-        res.status(201).json({ success: true, newProject });
+        res.status(201).json({ success: true, message: "Project created successfully" });
     }
     catch (error) {
         next(error);
@@ -95,7 +95,7 @@ const updateProject = async (req, res, next) => {
         if (!updatedProject) {
             throw new Error("Project not found");
         }
-        res.status(200).json({ success: true, updatedProject });
+        res.status(200).json({ success: true, message: "Project updated successfully" });
     }
     catch (error) {
         next(error);

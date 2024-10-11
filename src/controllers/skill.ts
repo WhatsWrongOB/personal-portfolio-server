@@ -58,7 +58,7 @@ const createSkill = async (req: Request, res: Response, next: NextFunction): Pro
       proficiency,
     });
 
-    res.status(201).json({ success: true, newSkill });
+    res.status(201).json({ success: true, message: "Skill created successfully"  });
   } catch (error) {
     next(error);
   }
@@ -90,7 +90,7 @@ const updateSkill = async (req: Request, res: Response, next: NextFunction): Pro
       throw new Error("Skill not found");
     }
 
-    res.status(200).json({ success: true, updatedSkill });
+    res.status(200).json({ success: true, message: "Skill updated successfully"  });
   } catch (error) {
     next(error);
   }

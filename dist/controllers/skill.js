@@ -49,7 +49,7 @@ const createSkill = async (req, res, next) => {
             description,
             proficiency,
         });
-        res.status(201).json({ success: true, newSkill });
+        res.status(201).json({ success: true, message: "Skill created successfully" });
     }
     catch (error) {
         next(error);
@@ -72,7 +72,7 @@ const updateSkill = async (req, res, next) => {
         if (!updatedSkill) {
             throw new Error("Skill not found");
         }
-        res.status(200).json({ success: true, updatedSkill });
+        res.status(200).json({ success: true, message: "Skill updated successfully" });
     }
     catch (error) {
         next(error);
