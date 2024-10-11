@@ -96,7 +96,6 @@ const updateSkill = async (req: Request, res: Response, next: NextFunction): Pro
   }
 };
 
-
 /**
  * Delete a skill by ID from the database.
  * 
