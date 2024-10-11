@@ -8,26 +8,29 @@ const app = express();
 /* @** Middlewares & Caching*/
 dotenv.config();
 app.use(express.json({ limit: "10mb" }));
+app.use(cors({ origin: "*", credentials: true }));
 /* @** CORS configuration */
-const allowedOrigins = [
-    "http://localhost:5500",
-    "http://localhost:5173",
-    "https://obaidbro.netlify.app",
-];
-app.use(cors({
-    origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        }
-        else {
-            callback(new Error("Not allowed by CORS"));
-        }
-    },
-    methods: "GET, POST, PUT, DELETE, PATCH, OPTIONS",
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
-    exposedHeaders: ["Set-Cookie"],
-}));
+// const allowedOrigins: string[] = [
+//   "http://localhost:5500",
+//   "http://localhost:5173/",
+//   "https://obaidbro.netlify.app",
+//   "https://acdemicdashboard.netlify.app",
+// ];
+// app.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       if (!origin || allowedOrigins.includes(origin)) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("Not allowed by CORS"));
+//       }
+//     },
+//     methods: "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+//     credentials: true,
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//     exposedHeaders: ["Set-Cookie"],
+//   })
+// );
 /* @** Routes */
 app.get("/", async (req, res) => {
     res.send("Happy Coding 🚀");
