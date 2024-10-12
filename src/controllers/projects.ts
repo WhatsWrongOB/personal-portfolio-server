@@ -64,8 +64,7 @@ const getProjectById = async (req: Request, res: Response, next: NextFunction): 
  */
 const createProject = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const { name, type, tech, description, link } = req.body;
-    const image = req.file?.filename;
+    const {image, name, type, tech, description, link } = req.body;
 
     if (!image || !name || !type || !tech || !description || !link) {
       throw new Error("All fields are required");
@@ -105,15 +104,9 @@ const updateProject = async (
     const { id } = req.params;
     const {image, name, type, tech, description, link } = req.body;
 
-
     const project = await Project.findById(id);
     if (!project) {
       throw new Error("Project not found");
-    }
-
-    let imagePath = project.image; 
-    if (req.file) {
-      imagePath = `/uploads/images/${req.file.filename}`;
     }
 
     const updatedProject = await Project.findByIdAndUpdate(
@@ -125,7 +118,6 @@ const updateProject = async (
     res.status(200).json({
       success: true,
       message: "Project updated successfully",
-      project: updatedProject,
     });
   } catch (error) {
     next(error);

@@ -82,10 +82,6 @@ const updateSkill = async (req, res, next) => {
         if (!skill) {
             throw new Error("Skill not found");
         }
-        let iconPath = skill.icon;
-        if (req.file) {
-            iconPath = `/uploads/images/${req.file.filename}`;
-        }
         await Skill.findByIdAndUpdate(id, { icon, name, description, proficiency }, { new: true, runValidators: true });
         res.status(200).json({
             success: true,
