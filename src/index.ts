@@ -52,7 +52,6 @@ mongoose
     console.log("Error connecting to MongoDB:", err.message);
   });
 
-/* @** Error Middleware */
 
 interface MyError extends Error {
   statusCode?: number;

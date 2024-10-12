@@ -41,7 +41,6 @@ router.post("/projects", createProject);
 router.patch("/projects/:id", updateProject);
 router.delete("/projects/:id", deleteProject);
 
-
 /*________________ Messages ______________*/
 router.get("/message", getMessages);
 router.post("/message", createMessage);
