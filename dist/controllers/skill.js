@@ -76,7 +76,7 @@ const createSkill = async (req, res, next) => {
 const updateSkill = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { name, description, proficiency } = req.body;
+        const { icon, name, description, proficiency } = req.body;
         // Find the existing skill
         const skill = await Skill.findById(id);
         if (!skill) {
@@ -86,7 +86,7 @@ const updateSkill = async (req, res, next) => {
         if (req.file) {
             iconPath = `/uploads/images/${req.file.filename}`;
         }
-        await Skill.findByIdAndUpdate(id, { icon: iconPath, name, description, proficiency }, { new: true, runValidators: true });
+        await Skill.findByIdAndUpdate(id, { icon, name, description, proficiency }, { new: true, runValidators: true });
         res.status(200).json({
             success: true,
             message: "Skill updated successfully",

@@ -71,7 +71,6 @@ const createProject = async (req: Request, res: Response, next: NextFunction): P
       throw new Error("All fields are required");
     }
 
-
     await Project.create({
       image,
       name,
@@ -104,7 +103,7 @@ const updateProject = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const { name, type, tech, description, link } = req.body;
+    const {image, name, type, tech, description, link } = req.body;
 
 
     const project = await Project.findById(id);
@@ -119,7 +118,7 @@ const updateProject = async (
 
     const updatedProject = await Project.findByIdAndUpdate(
       id,
-      { image: imagePath, name, type, tech, description, link },
+      { image, name, type, tech, description, link },
       { new: true, runValidators: true }
     );
 

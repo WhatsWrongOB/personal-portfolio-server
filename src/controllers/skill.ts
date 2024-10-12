@@ -97,7 +97,7 @@ const updateSkill = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const { name, description, proficiency } = req.body;
+    const {icon, name, description, proficiency } = req.body;
 
     // Find the existing skill
     const skill = await Skill.findById(id);
@@ -112,7 +112,7 @@ const updateSkill = async (
 
       await Skill.findByIdAndUpdate(
       id,
-      { icon: iconPath, name, description, proficiency },
+      { icon, name, description, proficiency },
       { new: true, runValidators: true }
     );
 

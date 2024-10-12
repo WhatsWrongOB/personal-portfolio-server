@@ -91,7 +91,7 @@ const createProject = async (req, res, next) => {
 const updateProject = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { name, type, tech, description, link } = req.body;
+        const { image, name, type, tech, description, link } = req.body;
         const project = await Project.findById(id);
         if (!project) {
             throw new Error("Project not found");
@@ -100,7 +100,7 @@ const updateProject = async (req, res, next) => {
         if (req.file) {
             imagePath = `/uploads/images/${req.file.filename}`;
         }
-        const updatedProject = await Project.findByIdAndUpdate(id, { image: imagePath, name, type, tech, description, link }, { new: true, runValidators: true });
+        const updatedProject = await Project.findByIdAndUpdate(id, { image, name, type, tech, description, link }, { new: true, runValidators: true });
         res.status(200).json({
             success: true,
             message: "Project updated successfully",
