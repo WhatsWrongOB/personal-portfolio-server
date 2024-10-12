@@ -35,21 +35,30 @@ const getSkills = async (req, res, next) => {
  */
 const createSkill = async (req, res, next) => {
     try {
-        const { icon, name, description, proficiency } = req.body;
-        if (!icon || !name || !description || !proficiency) {
+        const { name, description, proficiency } = req.body;
+        if (!req.file) {
+            throw new Error("Icon file is required");
+        }
+        if (!name || !description || !proficiency) {
             throw new Error("All fields are required");
         }
         const existingSkill = await Skill.findOne({ name });
         if (existingSkill) {
             throw new Error("Skill already exists");
         }
-        const newSkill = await Skill.create({
+        const icon = `/uploads/images/${req.file.filename}`;
+        await Skill.create({
             icon,
             name,
             description,
             proficiency,
         });
-        res.status(201).json({ success: true, message: "Skill created successfully" });
+        res
+            .status(201)
+            .json({
+            success: true,
+            message: "Skill created successfully",
+        });
     }
     catch (error) {
         next(error);
@@ -67,12 +76,21 @@ const createSkill = async (req, res, next) => {
 const updateSkill = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { icon, name, description, proficiency } = req.body;
-        const updatedSkill = await Skill.findByIdAndUpdate(id, { icon, name, description, proficiency }, { new: true, runValidators: true });
-        if (!updatedSkill) {
+        const { name, description, proficiency } = req.body;
+        // Find the existing skill
+        const skill = await Skill.findById(id);
+        if (!skill) {
             throw new Error("Skill not found");
         }
-        res.status(200).json({ success: true, message: "Skill updated successfully" });
+        let iconPath = skill.icon;
+        if (req.file) {
+            iconPath = `/uploads/images/${req.file.filename}`;
+        }
+        await Skill.findByIdAndUpdate(id, { icon: iconPath, name, description, proficiency }, { new: true, runValidators: true });
+        res.status(200).json({
+            success: true,
+            message: "Skill updated successfully",
+        });
     }
     catch (error) {
         next(error);

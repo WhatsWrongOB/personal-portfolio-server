@@ -3,40 +3,39 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import router from "./routes/index.js";
 import express from "express";
-/* @** Intializing Express */
+import { fileURLToPath } from 'url';
+import path, { dirname } from 'path';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const app = express();
-/* @** Middlewares & Caching*/
 dotenv.config();
 app.use(express.json({ limit: "10mb" }));
-app.use(cors({ origin: "*", credentials: true }));
-/* @** CORS configuration */
-// const allowedOrigins: string[] = [
-//   "http://localhost:5500",
-//   "http://localhost:5173/",
-//   "https://obaidbro.netlify.app",
-//   "https://acdemicdashboard.netlify.app",
-// ];
-// app.use(
-//   cors({
-//     origin: (origin, callback) => {
-//       if (!origin || allowedOrigins.includes(origin)) {
-//         callback(null, true);
-//       } else {
-//         callback(new Error("Not allowed by CORS"));
-//       }
-//     },
-//     methods: "GET, POST, PUT, DELETE, PATCH, OPTIONS",
-//     credentials: true,
-//     allowedHeaders: ["Content-Type", "Authorization"],
-//     exposedHeaders: ["Set-Cookie"],
-//   })
-// );
-/* @** Routes */
+app.use(express.urlencoded({ extended: true }));
+const allowedOrigins = [
+    "http://localhost:5500",
+    "http://localhost:5173",
+    "https://obaidbro.netlify.app",
+    "https://acdemicdashboard.netlify.app",
+];
+app.use(cors({
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        }
+        else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    methods: "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["Set-Cookie"],
+}));
 app.get("/", async (req, res) => {
     res.send("Happy Coding 🚀");
 });
+app.use('/uploads/images', express.static(path.join(__dirname, 'uploads/images')));
 app.use("/api", router);
-/* @** Mongo connection & Server */
 const PORT = process.env.PORT || 5000;
 mongoose
     .connect(process.env.MONGODB)

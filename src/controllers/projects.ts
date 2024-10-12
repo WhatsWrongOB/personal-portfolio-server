@@ -64,13 +64,15 @@ const getProjectById = async (req: Request, res: Response, next: NextFunction): 
  */
 const createProject = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const { image, name, type, tech, description, link } = req.body;
+    const { name, type, tech, description, link } = req.body;
+    const image = req.file?.filename;
 
     if (!image || !name || !type || !tech || !description || !link) {
       throw new Error("All fields are required");
     }
 
-    const newProject = await Project.create({
+
+    await Project.create({
       image,
       name,
       type,
@@ -79,7 +81,7 @@ const createProject = async (req: Request, res: Response, next: NextFunction): P
       link,
     });
 
-    res.status(201).json({ success: true, message: "Project created successfully"  });
+    res.status(201).json({ success: true, message: "Project created successfully" });
   } catch (error) {
     next(error);
   }
@@ -95,22 +97,37 @@ const createProject = async (req: Request, res: Response, next: NextFunction): P
  * @param {NextFunction} next - Express next middleware function
  * @returns {Promise<void>} - Returns the updated project or an error message
  */
-const updateProject = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const updateProject = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const { id } = req.params;
-    const { image, name, type, tech, description, link } = req.body;
+    const { name, type, tech, description, link } = req.body;
 
-    const updatedProject = await Project.findByIdAndUpdate(
-      id,
-      { image, name, type, tech, description, link },
-      { new: true, runValidators: true }
-    );
 
-    if (!updatedProject) {
+    const project = await Project.findById(id);
+    if (!project) {
       throw new Error("Project not found");
     }
 
-    res.status(200).json({ success: true, message: "Project updated successfully"  });
+    let imagePath = project.image; 
+    if (req.file) {
+      imagePath = `/uploads/images/${req.file.filename}`;
+    }
+
+    const updatedProject = await Project.findByIdAndUpdate(
+      id,
+      { image: imagePath, name, type, tech, description, link },
+      { new: true, runValidators: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Project updated successfully",
+      project: updatedProject,
+    });
   } catch (error) {
     next(error);
   }

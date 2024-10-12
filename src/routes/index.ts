@@ -21,6 +21,7 @@ import {
   createMessage,
   deleteMessage,
 } from "../controllers/contact.js";
+import upload from "../config/index.js";
 
 const router = Router();
 
@@ -30,15 +31,15 @@ router.post("/login", loginUser);
 
 /*________________ Skills ______________*/
 router.get("/skills", getSkills);
-router.post("/skills", createSkill);
-router.patch("/skills/:id", updateSkill);
+router.post("/skills", upload.single("image"), createSkill);
+router.patch("/skills/:id", upload.single("image"), updateSkill);
 router.delete("/skills/:id", deleteSkill);
 
 /*________________ Projects ______________*/
 router.get("/projects", getProjects);
 router.get("/projects/:id", getProjectById);
-router.post("/projects", createProject);
-router.patch("/projects/:id", updateProject);
+router.post("/projects", upload.single("image"), createProject);
+router.patch("/projects/:id", upload.single("image"), updateProject);
 router.delete("/projects/:id", deleteProject);
 
 
