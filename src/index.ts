@@ -3,11 +3,7 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import router from "./routes/index.js";
 import express, { Request, NextFunction, Response, Application } from "express";
-import { fileURLToPath } from 'url';
-import path, { dirname } from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 const app: Application = express();
 
@@ -17,7 +13,6 @@ app.use(express.urlencoded({ extended: true }));
 
 const allowedOrigins: string[] = [
   "http://localhost:5500",
-  "http://localhost:5173",
   "https://obaidbro.netlify.app",
   "https://acdemicdashboard.netlify.app",
 ];
@@ -42,7 +37,6 @@ app.get("/", async (req: Request, res: Response) => {
   res.send("Happy Coding 🚀");
 });
 
-app.use('/uploads/images', express.static(path.join(__dirname, 'uploads/images')));
 app.use("/api", router);
 
 const PORT = process.env.PORT || 5000;
