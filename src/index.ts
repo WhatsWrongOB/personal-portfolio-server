@@ -45,25 +45,23 @@ app.use("/api", router);
 
 app.use("/uploads", express.static(`${__dirname}/uploads`));
 
-
 const PORT = process.env.PORT || 5000;
 
-export const URL =
+const URL =
   process.env.DOMAIN?.trim() === "DEVELOPMENT"
     ? `http://localhost:${PORT}`
     : process.env.SERVER_UR;
 
-
 mongoose
   .connect(process.env.MONGODB as string)
   .then(() => {
-app.listen(PORT, () => {
-  console.log(`Express running → On http://localhost:${PORT}  🚀`);
-});
-})
-.catch((err: Error) => {
-  console.log("Error connecting to MongoDB:", err.message);
-});
+    app.listen(PORT, () => {
+      console.log(`Express running → On http://localhost:${PORT}  🚀`);
+    });
+  })
+  .catch((err: Error) => {
+    console.log("Error connecting to MongoDB:", err.message);
+  });
 
 interface MyError extends Error {
   statusCode?: number;
@@ -81,4 +79,4 @@ app.use((err: MyError, req: Request, res: Response, next: NextFunction) => {
 });
 
 export default MyError;
-
+export { URL };
