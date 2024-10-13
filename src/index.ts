@@ -47,10 +47,10 @@ app.use("/uploads", express.static(`${__dirname}/uploads`));
 
 const PORT = process.env.PORT || 5000;
 
-const URL =
-  process.env.DOMAIN?.trim() === "DEVELOPMENT"
-    ? `http://localhost:${PORT}`
-    : process.env.SERVER_UR;
+// const URL =
+//   process.env.DOMAIN?.trim() === "DEVELOPMENT"
+//     ? `http://localhost:${PORT}`
+//     : process.env.SERVER_URL;
 
 mongoose
   .connect(process.env.MONGODB as string)
@@ -79,4 +79,4 @@ app.use((err: MyError, req: Request, res: Response, next: NextFunction) => {
 });
 
 export default MyError;
-export { URL };
+// export { URL };

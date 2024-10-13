@@ -3,8 +3,13 @@ import Skill from "../models/skill.js";
 import { uploadDirPath } from "../config/index.js";
 import path from "path";
 import fs from "fs/promises";
-import { URL } from "../index.js";
+// import { URL } from "../index.js";
 
+
+const URL =
+  process.env.DOMAIN?.trim() === "DEVELOPMENT"
+    ? `http://localhost:3000`
+    : process.env.SERVER_URL;
 
 
 /**

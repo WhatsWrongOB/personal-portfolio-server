@@ -36,9 +36,10 @@ app.get("/", async (req, res) => {
 app.use("/api", router);
 app.use("/uploads", express.static(`${__dirname}/uploads`));
 const PORT = process.env.PORT || 5000;
-const URL = process.env.DOMAIN?.trim() === "DEVELOPMENT"
-    ? `http://localhost:${PORT}`
-    : process.env.SERVER_UR;
+// const URL =
+//   process.env.DOMAIN?.trim() === "DEVELOPMENT"
+//     ? `http://localhost:${PORT}`
+//     : process.env.SERVER_URL;
 mongoose
     .connect(process.env.MONGODB)
     .then(() => {
@@ -57,4 +58,4 @@ app.use((err, req, res, next) => {
         message,
     });
 });
-export { URL };
+// export { URL };
