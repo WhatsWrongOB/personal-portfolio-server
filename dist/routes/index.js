@@ -10,14 +10,14 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 /*________________ Skills ______________*/
 router.get("/skills", getSkills);
-router.post("/skills", createSkill);
-router.patch("/skills/:id", updateSkill);
+router.post("/skills", upload.single("icon"), createSkill);
+router.patch("/skills/:id", upload.single("icon"), updateSkill);
 router.delete("/skills/:id", deleteSkill);
 /*________________ Projects ______________*/
 router.get("/projects", getProjects);
 router.get("/projects/:id", getProjectById);
 router.post("/projects", upload.single("image"), createProject);
-router.patch("/projects/:id", updateProject);
+router.patch("/projects/:id", upload.single("image"), updateProject);
 router.delete("/projects/:id", deleteProject);
 /*________________ Messages ______________*/
 router.get("/message", getMessages);

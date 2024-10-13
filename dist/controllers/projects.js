@@ -1,4 +1,7 @@
 import Project from "../models/project.js";
+import path from "path";
+import { uploadDirPath } from "../config/index.js";
+import fs from "fs/promises";
 /**
  * Get all projects from the database.
  *
@@ -60,11 +63,12 @@ const getProjectById = async (req, res, next) => {
  */
 const createProject = async (req, res, next) => {
     try {
-        const { image, name, type, tech, description, link } = req.body;
-        console.log(req.file);
-        if (!image || !name || !type || !tech || !description || !link) {
+        const { name, type, tech, description, link } = req.body;
+        const file = req?.file;
+        if (!file || !name || !type || !tech || !description || !link) {
             throw new Error("All fields are required");
         }
+        const image = `${process.env.SERVER_URL}/uploads/${file.originalname}`;
         await Project.create({
             image,
             name,
@@ -73,7 +77,9 @@ const createProject = async (req, res, next) => {
             description,
             link,
         });
-        res.status(201).json({ success: true, message: "Project created successfully" });
+        res
+            .status(201)
+            .json({ success: true, message: "Project created successfully" });
     }
     catch (error) {
         next(error);
@@ -91,12 +97,20 @@ const createProject = async (req, res, next) => {
 const updateProject = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { image, name, type, tech, description, link } = req.body;
+        const { name, type, tech, description, link } = req.body;
+        const file = req?.file;
         const project = await Project.findById(id);
         if (!project) {
             throw new Error("Project not found");
         }
-        const updatedProject = await Project.findByIdAndUpdate(id, { image, name, type, tech, description, link }, { new: true, runValidators: true });
+        let image;
+        if (file) {
+            image = `${process.env.SERVER_URL}/uploads/${file?.originalname}`;
+            const imagePath = project.image;
+            const fullImagePath = path.join(uploadDirPath, path.basename(imagePath));
+            await fs.unlink(fullImagePath);
+        }
+        await Project.findByIdAndUpdate(id, { image, name, type, tech, description, link }, { new: true, runValidators: true });
         res.status(200).json({
             success: true,
             message: "Project updated successfully",
@@ -122,10 +136,15 @@ const deleteProject = async (req, res, next) => {
         if (!deletedProject) {
             throw new Error("Project not found");
         }
-        res.status(200).json({ success: true, message: "Project deleted successfully" });
+        const imagePath = deletedProject.image;
+        const fullImagePath = path.join(uploadDirPath, path.basename(imagePath));
+        await fs.unlink(fullImagePath);
+        res
+            .status(200)
+            .json({ success: true, message: "Project deleted successfully" });
     }
     catch (error) {
         next(error);
     }
 };
-export { getProjects, createProject, updateProject, deleteProject, getProjectById };
+export { getProjects, createProject, updateProject, deleteProject, getProjectById, };
