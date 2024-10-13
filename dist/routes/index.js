@@ -3,6 +3,7 @@ import { registerUser, loginUser } from "../controllers/authentication.js";
 import { getSkills, createSkill, updateSkill, deleteSkill, } from "../controllers/skill.js";
 import { getProjects, createProject, updateProject, deleteProject, getProjectById, } from "../controllers/projects.js";
 import { getMessages, createMessage, deleteMessage, } from "../controllers/contact.js";
+import upload from "../config/index.js";
 const router = Router();
 /*________________ Authentication ______________*/
 router.post("/register", registerUser);
@@ -15,7 +16,7 @@ router.delete("/skills/:id", deleteSkill);
 /*________________ Projects ______________*/
 router.get("/projects", getProjects);
 router.get("/projects/:id", getProjectById);
-router.post("/projects", createProject);
+router.post("/projects", upload.single("image"), createProject);
 router.patch("/projects/:id", updateProject);
 router.delete("/projects/:id", deleteProject);
 /*________________ Messages ______________*/

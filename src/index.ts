@@ -8,8 +8,8 @@ import express, { Request, NextFunction, Response, Application } from "express";
 const app: Application = express();
 
 dotenv.config();
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 const allowedOrigins: string[] = [
   "http://localhost:5500",
@@ -39,19 +39,19 @@ app.get("/", async (req: Request, res: Response) => {
 
 app.use("/api", router);
 
+
 const PORT = process.env.PORT || 5000;
 
 mongoose
   .connect(process.env.MONGODB as string)
   .then(() => {
-    app.listen(PORT, () => {
-      console.log(`Express running → On http://localhost:${PORT}  🚀`);
-    });
-  })
-  .catch((err: Error) => {
-    console.log("Error connecting to MongoDB:", err.message);
-  });
-
+app.listen(PORT, () => {
+  console.log(`Express running → On http://localhost:${PORT}  🚀`);
+});
+})
+.catch((err: Error) => {
+  console.log("Error connecting to MongoDB:", err.message);
+});
 
 interface MyError extends Error {
   statusCode?: number;

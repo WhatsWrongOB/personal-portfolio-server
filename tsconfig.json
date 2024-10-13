@@ -9,9 +9,5 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": [
-    "src/**/*.ts",
-    "uploads/**/*" 
-  ],
   "exclude": ["node_modules"]
 }

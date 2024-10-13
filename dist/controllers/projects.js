@@ -61,6 +61,7 @@ const getProjectById = async (req, res, next) => {
 const createProject = async (req, res, next) => {
     try {
         const { image, name, type, tech, description, link } = req.body;
+        console.log(req.file);
         if (!image || !name || !type || !tech || !description || !link) {
             throw new Error("All fields are required");
         }
