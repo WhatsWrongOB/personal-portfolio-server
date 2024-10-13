@@ -74,3 +74,4 @@ app.use((err: MyError, req: Request, res: Response, next: NextFunction) => {
 });
 
 export default MyError;
+
