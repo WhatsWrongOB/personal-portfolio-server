@@ -6,10 +6,7 @@ import fs from "fs/promises";
 // import { URL } from "../index.js";
 
 
-const URL =
-  process.env.DOMAIN?.trim() === "DEVELOPMENT"
-    ? `http://localhost:3000`
-    : process.env.SERVER_URL;
+const URL = "https://obaidbro.vercel.app";
 
 
 /**
