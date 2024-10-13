@@ -2,6 +2,7 @@ import Skill from "../models/skill.js";
 import { uploadDirPath } from "../config/index.js";
 import path from "path";
 import fs from "fs/promises";
+import { URL } from "../index.js";
 /**
  * Get all skills from the database.
  *
@@ -50,7 +51,7 @@ const createSkill = async (req, res, next) => {
         if (existingSkill) {
             throw new Error("Skill already exists");
         }
-        const icon = `${process.env.SERVER_URL}/uploads/${file.originalname}`;
+        const icon = `${URL}/uploads/${file.originalname}`;
         await Skill.create({
             icon,
             name,
@@ -87,7 +88,7 @@ const updateSkill = async (req, res, next) => {
         }
         let icon;
         if (file) {
-            icon = `${process.env.SERVER_URL}/uploads/${file?.originalname}`;
+            icon = `${URL}/uploads/${file?.originalname}`;
             const iconPath = skill.icon;
             const fullIconPath = path.join(uploadDirPath, path.basename(iconPath));
             await fs.unlink(fullIconPath);
@@ -129,4 +130,4 @@ const deleteSkill = async (req, res, next) => {
         next(error);
     }
 };
-export { getSkills, createSkill, updateSkill, deleteSkill };
+export { getSkills, createSkill, updateSkill, deleteSkill, URL };

@@ -45,7 +45,14 @@ app.use("/api", router);
 
 app.use("/uploads", express.static(`${__dirname}/uploads`));
 
+
 const PORT = process.env.PORT || 5000;
+
+export const URL =
+  process.env.DOMAIN?.trim() === "DEVELOPMENT"
+    ? `http://localhost:${PORT}`
+    : process.env.SERVER_UR;
+
 
 mongoose
   .connect(process.env.MONGODB as string)
