@@ -8,8 +8,8 @@ import { fileURLToPath } from "url";
 
 dotenv.config();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
 const app: Application = express();
 app.use(express.json());
@@ -43,7 +43,7 @@ app.get("/", async (req: Request, res: Response) => {
 
 app.use("/api", router);
 
-app.use("/uploads", express.static(`${__dirname}/uploads`));
+// app.use("/uploads", express.static(`${__dirname}/uploads`));
 
 const PORT = process.env.PORT || 5000;
 
