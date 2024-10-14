@@ -3,9 +3,9 @@ import Project from "../models/project.js";
 import path from "path";
 import { uploadDirPath } from "../config/index.js";
 import fs from "fs/promises";
-// import { URL } from "../index.js";
+import { imageUrl } from "../index.js";
 
-const URL = "https://obaidbro.vercel.app";
+// const imageUrl = "https://obaidbro.vercel.app";
 
 /**
  * Get all projects from the database.
@@ -87,7 +87,7 @@ const createProject = async (
       throw new Error("All fields are required");
     }
 
-    const image = `${URL}/uploads/${file.originalname}`;
+    const image = `${imageUrl}/uploads/${file.originalname}`;
 
     await Project.create({
       image,
@@ -133,7 +133,7 @@ const updateProject = async (
 
     let image;
     if (file) {
-      image = `${URL}/uploads/${file?.originalname}`;
+      image = `${imageUrl}/uploads/${file?.originalname}`;
       const imagePath = project.image;
 
       const fullImagePath = path.join(uploadDirPath, path.basename(imagePath));
