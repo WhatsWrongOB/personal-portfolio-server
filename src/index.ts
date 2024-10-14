@@ -21,7 +21,6 @@ const allowedOrigins: string[] = [
   process.env.DEVELOPMENT_URL as string,
 ];
 
-
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -47,10 +46,13 @@ app.use("/uploads", express.static(`${__dirname}/uploads`));
 
 const PORT = Number(process.env.PORT) || 5000;
 
-const imageUrl =
-  (process.env.DOMAIN?.trim() as string) === "DEVELOPMENT"
-    ? `http://localhost:${PORT}`
-    : process.env.SERVER_URL;
+let imageUrl;
+
+if ((process.env.DOMAIN?.trim() as string) === "DEVELOPMENT") {
+  imageUrl = `http://localhost:${PORT}`;
+} else {
+  imageUrl = process.env.SERVER_URL;
+}
 
 mongoose
   .connect(process.env.MONGODB as string)
