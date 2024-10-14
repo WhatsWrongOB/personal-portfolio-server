@@ -89,7 +89,7 @@ const createProject = async (
     }
 
     const image = `${imageUrl}/uploads/${file.originalname}`;
-  console.log(image)
+
     await Project.create({
       image,
       name,

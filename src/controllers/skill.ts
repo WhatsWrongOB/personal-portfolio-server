@@ -180,4 +180,4 @@ const deleteSkill = async (
   }
 };
 
-export { getSkills, createSkill, updateSkill, deleteSkill, imageUrl };
+export { getSkills, createSkill, updateSkill, deleteSkill };
