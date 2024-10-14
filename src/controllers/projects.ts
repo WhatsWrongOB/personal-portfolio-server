@@ -81,6 +81,7 @@ const createProject = async (
 ): Promise<void> => {
   try {
     const { name, type, tech, description, link } = req.body;
+
     const file = req?.file;
 
     if (!file || !name || !type || !tech || !description || !link) {
@@ -88,7 +89,7 @@ const createProject = async (
     }
 
     const image = `${imageUrl}/uploads/${file.originalname}`;
-
+  console.log(image)
     await Project.create({
       image,
       name,

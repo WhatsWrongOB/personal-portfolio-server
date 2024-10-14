@@ -3,8 +3,13 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import router from "./routes/index.js";
 import express, { Request, NextFunction, Response, Application } from "express";
+import path from "path";
+import { fileURLToPath } from "url";
 
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 
 const app: Application = express();
@@ -38,7 +43,7 @@ app.get("/", async (req: Request, res: Response) => {
 });
 
 app.use("/api", router);
-
+app.use("/uploads", express.static(`${__dirname}/uploads`))
 
 const PORT = Number(process.env.PORT) || 5000;
 

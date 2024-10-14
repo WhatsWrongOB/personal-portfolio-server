@@ -7,8 +7,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// const uploadDirPath = path.join(__dirname, 'uploads');
-const uploadDirPath = `${__dirname.slice(0, 41)}/uploads`;
+const uploadDirPath = path.join(__dirname, '../uploads'); 
 
 if (!existsSync(uploadDirPath)) {
   mkdirSync(uploadDirPath, { recursive: true });

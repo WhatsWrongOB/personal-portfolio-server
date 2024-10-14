@@ -53,7 +53,7 @@ const createSkill = async (
 ): Promise<void> => {
   try {
     const { name, description, proficiency } = req.body;
-    const file = req.file;
+    const file = req?.file;
     if (!file) {
       throw new Error("Icon file is required");
     }
