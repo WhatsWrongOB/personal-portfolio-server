@@ -10,7 +10,8 @@
     "watch" : "tsc --watch",
     "build": "tsc",
     "ts.check": "tsc --project tsconfig.json",
-    "add-build": "git add dist"
+    "add-build": "git add dist",
+    "vercel-build" : "echo hello"
   },
   "license": "ISC",
   "dependencies": {

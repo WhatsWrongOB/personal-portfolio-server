@@ -11,7 +11,6 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
 const app: Application = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -43,12 +42,12 @@ app.get("/", async (req: Request, res: Response) => {
 });
 
 app.use("/api", router);
-app.use("/uploads", express.static(`${__dirname}/uploads`))
+app.use("/uploads", express.static(`${__dirname}/uploads`));
 
 const PORT = Number(process.env.PORT) || 5000;
 
 const imageUrl =
-  process.env.DOMAIN?.trim() as string === "DEVELOPMENT"
+  (process.env.DOMAIN?.trim() as string) === "DEVELOPMENT"
     ? `http://localhost:${PORT}`
     : process.env.SERVER_URL;
 
@@ -78,5 +77,5 @@ app.use((err: MyError, req: Request, res: Response, next: NextFunction) => {
   });
 });
 
-export default MyError;
+export default app;
 export { imageUrl };
