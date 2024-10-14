@@ -105,7 +105,7 @@ const updateProject = async (req, res, next) => {
         if (!project) {
             throw new Error("Project not found");
         }
-        let image = project.image; // Retain the existing image if no new file is uploaded
+        let image = project.image;
         if (file) {
             image = `${imageUrl}/uploads/${file.originalname}`;
             const fullImagePath = path.join(uploadDirPath, path.basename(project.image));

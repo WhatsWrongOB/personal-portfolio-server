@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-export interface Skill {
+interface Skill {
   icon: string;
   name: string;
   description: string;

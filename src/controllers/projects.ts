@@ -82,7 +82,7 @@ const createProject = async (
   try {
     const { name, type, tech, description, link } = req.body;
     const file = req?.file;
-     
+
     if (!file || !name || !type || !tech || !description || !link) {
       throw new Error("All fields are required");
     }
@@ -98,7 +98,6 @@ const createProject = async (
       link,
     });
 
-    
     res
       .status(201)
       .json({ success: true, message: "Project created successfully" });
@@ -125,17 +124,20 @@ const updateProject = async (
     const { id } = req.params;
     const { name, type, tech, description, link } = req.body;
     const file = req?.file;
-
+    
     const project = await Project.findById(id);
     if (!project) {
       throw new Error("Project not found");
     }
 
-    let image = project.image; // Retain the existing image if no new file is uploaded
+    let image = project.image;
 
     if (file) {
       image = `${imageUrl}/uploads/${file.originalname}`;
-      const fullImagePath = path.join(uploadDirPath, path.basename(project.image));
+      const fullImagePath = path.join(
+        uploadDirPath,
+        path.basename(project.image)
+      );
 
       await fs.unlink(fullImagePath);
     }
@@ -154,7 +156,6 @@ const updateProject = async (
     next(error);
   }
 };
-
 
 /**
  * Delete a project by ID from the database.
@@ -183,9 +184,8 @@ const deleteProject = async (
     if (imagePath) {
       const fullImagePath = path.join(uploadDirPath, path.basename(imagePath));
 
-
       if (await fs.stat(fullImagePath).catch(() => false)) {
-        await fs.unlink(fullImagePath); 
+        await fs.unlink(fullImagePath);
       }
     }
 
@@ -196,7 +196,6 @@ const deleteProject = async (
     next(error);
   }
 };
-
 
 export {
   getProjects,
