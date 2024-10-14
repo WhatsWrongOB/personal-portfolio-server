@@ -12,9 +12,9 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 const allowedOrigins = [
-    "http://localhost:5500",
-    "https://obaidbro.netlify.app",
-    "https://acdemicdashboard.netlify.app",
+    process.env.DASHBOARD_URL,
+    process.env.CLIENT_URL,
+    process.env.DEVELOPMENT_URL,
 ];
 app.use(cors({
     origin: (origin, callback) => {

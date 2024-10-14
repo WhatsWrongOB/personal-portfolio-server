@@ -16,9 +16,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 const allowedOrigins: string[] = [
-  "http://localhost:5500",
-  "https://obaidbro.netlify.app",
-  "https://acdemicdashboard.netlify.app",
+  process.env.DASHBOARD_URL as string,
+  process.env.CLIENT_URL as string,
+  process.env.DEVELOPMENT_URL as string,
 ];
 
 app.use(
