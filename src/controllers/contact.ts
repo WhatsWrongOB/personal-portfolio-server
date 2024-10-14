@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import Contact from "../models/contact.js"; 
 
 /**
- * Get all messages from the database.
+ * Get all messages from the mng db databae.
  * 
  * @function getMessages
  * @param {Request} req - Express request object
@@ -43,7 +43,7 @@ const createMessage = async (req: Request, res: Response, next: NextFunction): P
       throw new Error("All fields are required");
     }
 
-    const newMessage = await Contact.create({
+     await Contact.create({
       username,
       email,
       message,

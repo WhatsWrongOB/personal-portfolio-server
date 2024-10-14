@@ -71,7 +71,6 @@ const createProject = async (req, res, next) => {
             throw new Error("All fields are required");
         }
         const image = `${imageUrl}/uploads/${file.originalname}`;
-        console.log(image);
         await Project.create({
             image,
             name,

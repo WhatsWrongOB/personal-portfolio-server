@@ -138,4 +138,4 @@ const deleteSkill = async (req, res, next) => {
         next(error);
     }
 };
-export { getSkills, createSkill, updateSkill, deleteSkill, imageUrl };
+export { getSkills, createSkill, updateSkill, deleteSkill };
