@@ -21,6 +21,7 @@ const allowedOrigins: string[] = [
   process.env.DEVELOPMENT_URL as string,
 ];
 
+
 app.use(
   cors({
     origin: (origin, callback) => {
