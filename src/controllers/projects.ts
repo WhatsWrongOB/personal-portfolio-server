@@ -131,13 +131,12 @@ const updateProject = async (
       throw new Error("Project not found");
     }
 
-    let image;
-    if (file) {
-      image = `${imageUrl}/uploads/${file?.originalname}`;
-      const imagePath = project.image;
+    let image = project.image; // Retain the existing image if no new file is uploaded
 
-      const fullImagePath = path.join(uploadDirPath, path.basename(imagePath));
-  
+    if (file) {
+      image = `${imageUrl}/uploads/${file.originalname}`;
+      const fullImagePath = path.join(uploadDirPath, path.basename(project.image));
+
       await fs.unlink(fullImagePath);
     }
 
@@ -155,6 +154,7 @@ const updateProject = async (
     next(error);
   }
 };
+
 
 /**
  * Delete a project by ID from the database.
@@ -180,9 +180,14 @@ const deleteProject = async (
 
     const imagePath = deletedProject.image;
 
-    const fullImagePath = path.join(uploadDirPath, path.basename(imagePath));
+    if (imagePath) {
+      const fullImagePath = path.join(uploadDirPath, path.basename(imagePath));
 
-    await fs.unlink(fullImagePath);
+
+      if (await fs.stat(fullImagePath).catch(() => false)) {
+        await fs.unlink(fullImagePath); 
+      }
+    }
 
     res
       .status(200)
@@ -191,6 +196,7 @@ const deleteProject = async (
     next(error);
   }
 };
+
 
 export {
   getProjects,

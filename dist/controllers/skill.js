@@ -82,17 +82,20 @@ const updateSkill = async (req, res, next) => {
         const { id } = req.params;
         const { name, description, proficiency } = req.body;
         const file = req?.file;
-        // Find the existing skill
         const skill = await Skill.findById(id);
         if (!skill) {
             throw new Error("Skill not found");
         }
-        let icon;
+        let icon = skill.icon;
         if (file) {
             icon = `${imageUrl}/uploads/${file?.originalname}`;
             const iconPath = skill.icon;
-            const fullIconPath = path.join(uploadDirPath, path.basename(iconPath));
-            await fs.unlink(fullIconPath);
+            if (iconPath) {
+                const fullIconPath = path.join(uploadDirPath, path.basename(iconPath));
+                if (await fs.stat(fullIconPath).catch(() => false)) {
+                    await fs.unlink(fullIconPath);
+                }
+            }
         }
         await Skill.findByIdAndUpdate(id, { icon, name, description, proficiency }, { new: true, runValidators: true });
         res.status(200).json({
@@ -121,8 +124,12 @@ const deleteSkill = async (req, res, next) => {
             throw new Error("Skill not found");
         }
         const iconPath = deletedSkill.icon;
-        const fullIconPath = path.join(uploadDirPath, path.basename(iconPath));
-        await fs.unlink(fullIconPath);
+        if (iconPath) {
+            const fullIconPath = path.join(uploadDirPath, path.basename(iconPath));
+            if (await fs.stat(fullIconPath).catch(() => false)) {
+                await fs.unlink(fullIconPath);
+            }
+        }
         res
             .status(200)
             .json({ success: true, message: "Skill deleted successfully" });

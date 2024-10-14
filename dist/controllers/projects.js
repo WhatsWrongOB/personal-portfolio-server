@@ -105,11 +105,10 @@ const updateProject = async (req, res, next) => {
         if (!project) {
             throw new Error("Project not found");
         }
-        let image;
+        let image = project.image; // Retain the existing image if no new file is uploaded
         if (file) {
-            image = `${imageUrl}/uploads/${file?.originalname}`;
-            const imagePath = project.image;
-            const fullImagePath = path.join(uploadDirPath, path.basename(imagePath));
+            image = `${imageUrl}/uploads/${file.originalname}`;
+            const fullImagePath = path.join(uploadDirPath, path.basename(project.image));
             await fs.unlink(fullImagePath);
         }
         await Project.findByIdAndUpdate(id, { image, name, type, tech, description, link }, { new: true, runValidators: true });
@@ -139,8 +138,12 @@ const deleteProject = async (req, res, next) => {
             throw new Error("Project not found");
         }
         const imagePath = deletedProject.image;
-        const fullImagePath = path.join(uploadDirPath, path.basename(imagePath));
-        await fs.unlink(fullImagePath);
+        if (imagePath) {
+            const fullImagePath = path.join(uploadDirPath, path.basename(imagePath));
+            if (await fs.stat(fullImagePath).catch(() => false)) {
+                await fs.unlink(fullImagePath);
+            }
+        }
         res
             .status(200)
             .json({ success: true, message: "Project deleted successfully" });

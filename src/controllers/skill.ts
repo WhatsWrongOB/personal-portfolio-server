@@ -5,9 +5,7 @@ import path from "path";
 import fs from "fs/promises";
 import { imageUrl } from "../index.js";
 
-
 // const imageUrl = "https://obaidbro.vercel.app";
-
 
 /**
  * Get all skills from the database.
@@ -107,21 +105,24 @@ const updateSkill = async (
     const { name, description, proficiency } = req.body;
     const file = req?.file;
 
-    // Find the existing skill
     const skill = await Skill.findById(id);
     if (!skill) {
       throw new Error("Skill not found");
     }
 
-    let icon;
+    let icon = skill.icon;
     if (file) {
       icon = `${imageUrl}/uploads/${file?.originalname}`;
 
       const iconPath = skill.icon;
 
-      const fullIconPath = path.join(uploadDirPath, path.basename(iconPath));
+      if (iconPath) {
+        const fullIconPath = path.join(uploadDirPath, path.basename(iconPath));
 
-      await fs.unlink(fullIconPath);
+        if (await fs.stat(fullIconPath).catch(() => false)) {
+          await fs.unlink(fullIconPath);
+        }
+      }
     }
 
     await Skill.findByIdAndUpdate(
@@ -155,6 +156,7 @@ const deleteSkill = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
+
     const deletedSkill = await Skill.findByIdAndDelete(id);
 
     if (!deletedSkill) {
@@ -163,9 +165,13 @@ const deleteSkill = async (
 
     const iconPath = deletedSkill.icon;
 
-    const fullIconPath = path.join(uploadDirPath, path.basename(iconPath));
+    if (iconPath) {
+      const fullIconPath = path.join(uploadDirPath, path.basename(iconPath));
 
-    await fs.unlink(fullIconPath);
+      if (await fs.stat(fullIconPath).catch(() => false)) {
+        await fs.unlink(fullIconPath);
+      }
+    }
 
     res
       .status(200)
