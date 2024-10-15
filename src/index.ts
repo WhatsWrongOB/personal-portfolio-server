@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import router from "./routes/index.js";
 import express, { Request, NextFunction, Response, Application } from "express";
+import isAuthenticated from "./middlewares/index.js";
 
 
 dotenv.config();

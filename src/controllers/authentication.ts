@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import UserModel from "../models/user.js";
+import jwt from "jsonwebtoken";
 
 /**
  * Register a new user.
@@ -69,14 +70,19 @@ const loginUser = async (
       throw new Error("Invalid credentials");
     }
 
-    res.status(200).json({
-      success: true,
-      message: "Login successful",
-      user: {
-        username: user.username,
-        email: user.email,
-      },
-    });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string);
+
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Login successful",
+        token,
+        user: {
+          username: user.username,
+          email: user.email,
+        },
+      });
   } catch (error) {
     next(error);
   }

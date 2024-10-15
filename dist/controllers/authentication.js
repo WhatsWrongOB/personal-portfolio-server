@@ -1,4 +1,5 @@
 import UserModel from "../models/user.js";
+import jwt from "jsonwebtoken";
 /**
  * Register a new user.
  *
@@ -51,9 +52,13 @@ const loginUser = async (req, res, next) => {
         if (user.password !== password) {
             throw new Error("Invalid credentials");
         }
-        res.status(200).json({
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+        res
+            .status(200)
+            .json({
             success: true,
             message: "Login successful",
+            token,
             user: {
                 username: user.username,
                 email: user.email,
