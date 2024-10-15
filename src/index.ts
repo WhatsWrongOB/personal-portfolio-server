@@ -54,6 +54,7 @@ if ((process.env.DOMAIN?.trim() as string) === "DEVELOPMENT") {
   imageUrl = process.env.SERVER_URL as string;
 }
 
+
 mongoose
   .connect(process.env.MONGODB as string)
   .then(() => {

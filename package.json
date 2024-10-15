@@ -9,7 +9,7 @@
     "dev": "nodemon dist/index.js",
     "watch": "tsc --watch",
     "build": "tsc",
-    "vercel-build": "tsc"
+    "vercel-build": "rimraf dist && tsc"
   },
   "license": "ISC",
   "dependencies": {
