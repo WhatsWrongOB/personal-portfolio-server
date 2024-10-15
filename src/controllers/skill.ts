@@ -138,7 +138,6 @@ const deleteSkill = async (
       throw new Error("Skill not found");
     }
 
-
     res
       .status(200)
       .json({ success: true, message: "Skill deleted successfully" });

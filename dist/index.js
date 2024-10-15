@@ -6,7 +6,6 @@ import express from "express";
 dotenv.config();
 const app = express();
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 const allowedOrigins = [
     process.env.DASHBOARD_URL,
     process.env.CLIENT_URL,
@@ -30,7 +29,6 @@ app.get("/", async (req, res) => {
     res.send("Happy Coding 🚀");
 });
 app.use("/api", router);
-app.use("/uploads", express.static(`${__dirname}/uploads`));
 const PORT = Number(process.env.PORT) || 5000;
 mongoose
     .connect(process.env.MONGODB)

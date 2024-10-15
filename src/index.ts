@@ -7,10 +7,8 @@ import express, { Request, NextFunction, Response, Application } from "express";
 
 dotenv.config();
 
-
 const app: Application = express();
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 
 const allowedOrigins: string[] = [
   process.env.DASHBOARD_URL as string,
@@ -39,7 +37,6 @@ app.get("/", async (req: Request, res: Response) => {
 });
 
 app.use("/api", router);
-app.use("/uploads", express.static(`${__dirname}/uploads`));
 
 const PORT = Number(process.env.PORT) || 5000;
 
