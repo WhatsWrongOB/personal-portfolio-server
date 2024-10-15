@@ -46,12 +46,12 @@ app.use("/uploads", express.static(`${__dirname}/uploads`));
 
 const PORT = Number(process.env.PORT) || 5000;
 
-let imageUrl;
+let imageUrl:string;
 
 if ((process.env.DOMAIN?.trim() as string) === "DEVELOPMENT") {
   imageUrl = `http://localhost:${PORT}`;
 } else {
-  imageUrl = process.env.SERVER_URL;
+  imageUrl = process.env.SERVER_URL as string;
 }
 
 mongoose
