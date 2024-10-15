@@ -1,8 +1,4 @@
 import Skill from "../models/skill.js";
-import { uploadDirPath } from "../config/index.js";
-import path from "path";
-import fs from "fs/promises";
-import { imageUrl } from "../index.js";
 // const imageUrl = "https://obaidbro.vercel.app";
 /**
  * Get all skills from the database.
@@ -40,11 +36,7 @@ const getSkills = async (req, res, next) => {
  */
 const createSkill = async (req, res, next) => {
     try {
-        const { name, description, proficiency } = req.body;
-        const file = req?.file;
-        if (!file) {
-            throw new Error("Icon file is required");
-        }
+        const { icon, name, description, proficiency } = req.body;
         if (!name || !description || !proficiency) {
             throw new Error("All fields are required");
         }
@@ -52,7 +44,6 @@ const createSkill = async (req, res, next) => {
         if (existingSkill) {
             throw new Error("Skill already exists");
         }
-        const icon = `${imageUrl}/uploads/${file.originalname}`;
         await Skill.create({
             icon,
             name,
@@ -80,22 +71,10 @@ const createSkill = async (req, res, next) => {
 const updateSkill = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { name, description, proficiency } = req.body;
-        const file = req?.file;
+        const { icon, name, description, proficiency } = req.body;
         const skill = await Skill.findById(id);
         if (!skill) {
             throw new Error("Skill not found");
-        }
-        let icon = skill.icon;
-        if (file) {
-            icon = `${imageUrl}/uploads/${file?.originalname}`;
-            const iconPath = skill.icon;
-            if (iconPath) {
-                const fullIconPath = path.join(uploadDirPath, path.basename(iconPath));
-                if (await fs.stat(fullIconPath).catch(() => false)) {
-                    await fs.unlink(fullIconPath);
-                }
-            }
         }
         await Skill.findByIdAndUpdate(id, { icon, name, description, proficiency }, { new: true, runValidators: true });
         res.status(200).json({
@@ -122,13 +101,6 @@ const deleteSkill = async (req, res, next) => {
         const deletedSkill = await Skill.findByIdAndDelete(id);
         if (!deletedSkill) {
             throw new Error("Skill not found");
-        }
-        const iconPath = deletedSkill.icon;
-        if (iconPath) {
-            const fullIconPath = path.join(uploadDirPath, path.basename(iconPath));
-            if (await fs.stat(fullIconPath).catch(() => false)) {
-                await fs.unlink(fullIconPath);
-            }
         }
         res
             .status(200)

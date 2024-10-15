@@ -1,9 +1,4 @@
 import Project from "../models/project.js";
-import path from "path";
-import { uploadDirPath } from "../config/index.js";
-import fs from "fs/promises";
-import { imageUrl } from "../index.js";
-// const imageUrl = "https://obaidbro.vercel.app";
 /**
  * Get all projects from the database.
  *
@@ -65,12 +60,10 @@ const getProjectById = async (req, res, next) => {
  */
 const createProject = async (req, res, next) => {
     try {
-        const { name, type, tech, description, link } = req.body;
-        const file = req?.file;
-        if (!file || !name || !type || !tech || !description || !link) {
+        const { image, name, type, tech, description, link } = req.body;
+        if (!image || !name || !type || !tech || !description || !link) {
             throw new Error("All fields are required");
         }
-        const image = `${imageUrl}/uploads/${file.originalname}`;
         await Project.create({
             image,
             name,
@@ -99,17 +92,10 @@ const createProject = async (req, res, next) => {
 const updateProject = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { name, type, tech, description, link } = req.body;
-        const file = req?.file;
+        const { image, name, type, tech, description, link } = req.body;
         const project = await Project.findById(id);
         if (!project) {
             throw new Error("Project not found");
-        }
-        let image = project.image;
-        if (file) {
-            image = `${imageUrl}/uploads/${file.originalname}`;
-            const fullImagePath = path.join(uploadDirPath, path.basename(project.image));
-            await fs.unlink(fullImagePath);
         }
         await Project.findByIdAndUpdate(id, { image, name, type, tech, description, link }, { new: true, runValidators: true });
         res.status(200).json({
@@ -136,13 +122,6 @@ const deleteProject = async (req, res, next) => {
         const deletedProject = await Project.findByIdAndDelete(id);
         if (!deletedProject) {
             throw new Error("Project not found");
-        }
-        const imagePath = deletedProject.image;
-        if (imagePath) {
-            const fullImagePath = path.join(uploadDirPath, path.basename(imagePath));
-            if (await fs.stat(fullImagePath).catch(() => false)) {
-                await fs.unlink(fullImagePath);
-            }
         }
         res
             .status(200)

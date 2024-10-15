@@ -3,13 +3,10 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import router from "./routes/index.js";
 import express, { Request, NextFunction, Response, Application } from "express";
-import path from "path";
-import { fileURLToPath } from "url";
+
 
 dotenv.config();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const app: Application = express();
 app.use(express.json());
@@ -46,15 +43,6 @@ app.use("/uploads", express.static(`${__dirname}/uploads`));
 
 const PORT = Number(process.env.PORT) || 5000;
 
-let imageUrl:string;
-
-if ((process.env.DOMAIN?.trim() as string) === "DEVELOPMENT") {
-  imageUrl = `http://localhost:${PORT}`;
-} else {
-  imageUrl = process.env.SERVER_URL as string;
-}
-
-
 mongoose
   .connect(process.env.MONGODB as string)
   .then(() => {
@@ -82,4 +70,3 @@ app.use((err: MyError, req: Request, res: Response, next: NextFunction) => {
 });
 
 export default app;
-export { imageUrl };

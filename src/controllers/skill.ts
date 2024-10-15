@@ -1,9 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import Skill from "../models/skill.js";
-import { uploadDirPath } from "../config/index.js";
-import path from "path";
-import fs from "fs/promises";
-import { imageUrl } from "../index.js";
+
 
 // const imageUrl = "https://obaidbro.vercel.app";
 
@@ -52,12 +49,8 @@ const createSkill = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { name, description, proficiency } = req.body;
-    const file = req?.file;
-    if (!file) {
-      throw new Error("Icon file is required");
-    }
-
+    const { icon,name, description, proficiency } = req.body;
+  
     if (!name || !description || !proficiency) {
       throw new Error("All fields are required");
     }
@@ -67,7 +60,6 @@ const createSkill = async (
       throw new Error("Skill already exists");
     }
 
-    const icon = `${imageUrl}/uploads/${file.originalname}`;
 
     await Skill.create({
       icon,
@@ -101,27 +93,11 @@ const updateSkill = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const { name, description, proficiency } = req.body;
-    const file = req?.file;
+    const { icon, name, description, proficiency } = req.body;
 
     const skill = await Skill.findById(id);
     if (!skill) {
       throw new Error("Skill not found");
-    }
-
-    let icon = skill.icon;
-    if (file) {
-      icon = `${imageUrl}/uploads/${file?.originalname}`;
-
-      const iconPath = skill.icon;
-
-      if (iconPath) {
-        const fullIconPath = path.join(uploadDirPath, path.basename(iconPath));
-
-        if (await fs.stat(fullIconPath).catch(() => false)) {
-          await fs.unlink(fullIconPath);
-        }
-      }
     }
 
     await Skill.findByIdAndUpdate(
@@ -162,15 +138,6 @@ const deleteSkill = async (
       throw new Error("Skill not found");
     }
 
-    const iconPath = deletedSkill.icon;
-
-    if (iconPath) {
-      const fullIconPath = path.join(uploadDirPath, path.basename(iconPath));
-
-      if (await fs.stat(fullIconPath).catch(() => false)) {
-        await fs.unlink(fullIconPath);
-      }
-    }
 
     res
       .status(200)

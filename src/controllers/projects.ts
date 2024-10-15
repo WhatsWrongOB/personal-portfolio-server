@@ -1,11 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import Project from "../models/project.js";
-import path from "path";
-import { uploadDirPath } from "../config/index.js";
-import fs from "fs/promises";
-import { imageUrl } from "../index.js";
 
-// const imageUrl = "https://obaidbro.vercel.app";
 
 /**
  * Get all projects from the database.
@@ -80,15 +75,12 @@ const createProject = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { name, type, tech, description, link } = req.body;
+    const {image, name, type, tech, description, link } = req.body;
 
-    const file = req?.file;
 
-    if (!file || !name || !type || !tech || !description || !link) {
+    if (!image || !name || !type || !tech || !description || !link) {
       throw new Error("All fields are required");
     }
-
-    const image = `${imageUrl}/uploads/${file.originalname}`;
 
     await Project.create({
       image,
@@ -123,25 +115,13 @@ const updateProject = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const { name, type, tech, description, link } = req.body;
-    const file = req?.file;
+    const {image, name, type, tech, description, link } = req.body;
     
     const project = await Project.findById(id);
     if (!project) {
       throw new Error("Project not found");
     }
 
-    let image = project.image;
-
-    if (file) {
-      image = `${imageUrl}/uploads/${file.originalname}`;
-      const fullImagePath = path.join(
-        uploadDirPath,
-        path.basename(project.image)
-      );
-
-      await fs.unlink(fullImagePath);
-    }
 
     await Project.findByIdAndUpdate(
       id,
@@ -178,16 +158,6 @@ const deleteProject = async (
 
     if (!deletedProject) {
       throw new Error("Project not found");
-    }
-
-    const imagePath = deletedProject.image;
-
-    if (imagePath) {
-      const fullImagePath = path.join(uploadDirPath, path.basename(imagePath));
-
-      if (await fs.stat(fullImagePath).catch(() => false)) {
-        await fs.unlink(fullImagePath);
-      }
     }
 
     res
