@@ -9,7 +9,7 @@
     "dev": "nodemon dist/index.js",
     "watch": "tsc --watch",
     "build": "tsc",
-    "vercel-build": "tsc && node dist/index.js"
+    "vercel-build": "tsc"
   },
   "license": "ISC",
   "dependencies": {
