@@ -1,12 +1,10 @@
-import cors from "cors";
 import dotenv from "dotenv";
+dotenv.config();
+import cors from "cors";
 import mongoose from "mongoose";
 import router from "./routes/index.js";
 import express, { Request, NextFunction, Response, Application } from "express";
-import isAuthenticated from "./middlewares/index.js";
-
-
-dotenv.config();
+import { cloudinary, upload } from "./config/index.js";
 
 const app: Application = express();
 app.use(express.json());
@@ -33,12 +31,18 @@ app.use(
   })
 );
 
+cloudinary.v2.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME as string, 
+  api_key: process.env.CLOUDINARY_API_KEY as string,
+  api_secret: process.env.CLOUDINARY_API_SECRET as string,
+});
 
 app.get("/", async (req: Request, res: Response) => {
   res.send("Happy Coding 🚀");
 });
 
 app.use("/api", router);
+
 
 const PORT = Number(process.env.PORT) || 5000;
 
@@ -61,7 +65,7 @@ interface MyError extends Error {
 app.use((err: MyError, req: Request, res: Response, next: NextFunction) => {
   const statusCode = err.statusCode || 400;
   const message = err.message || "Internal Server Error";
-
+ 
   res.status(statusCode).json({
     success: false,
     message,

@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import Project from "../models/project.js";
-
+import { cloudinary } from "../config/index.js";
+import getPublicIdFromUrl from "../utils/index.js";
 
 /**
  * Get all projects from the database.
@@ -75,8 +76,8 @@ const createProject = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const {image, name, type, tech, description, link } = req.body;
-
+    const { name, type, tech, description, link } = req.body;
+    const image = req.file?.path;
 
     if (!image || !name || !type || !tech || !description || !link) {
       throw new Error("All fields are required");
@@ -115,13 +116,25 @@ const updateProject = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const {image, name, type, tech, description, link } = req.body;
-    
+    const { name, type, tech, description, link } = req.body;
+    const image = req.file?.path;
+
     const project = await Project.findById(id);
     if (!project) {
       throw new Error("Project not found");
     }
 
+    const publicId = getPublicIdFromUrl(project.image);
+
+    if (!publicId) {
+      throw new Error("Invalid image URL");
+    }
+
+    cloudinary.v2.uploader.destroy(publicId, (error, result) => {
+      if (error) {
+        return next(error);
+      }
+    });
 
     await Project.findByIdAndUpdate(
       id,
@@ -160,6 +173,17 @@ const deleteProject = async (
       throw new Error("Project not found");
     }
 
+    const publicId = getPublicIdFromUrl(deletedProject.image);
+
+    if (!publicId) {
+      throw new Error("Invalid image URL");
+    }
+
+    cloudinary.v2.uploader.destroy(publicId, (error, result) => {
+      if (error) {
+        return next(error);
+      }
+    });
     res
       .status(200)
       .json({ success: true, message: "Project deleted successfully" });

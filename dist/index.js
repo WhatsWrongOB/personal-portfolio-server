@@ -1,9 +1,10 @@
-import cors from "cors";
 import dotenv from "dotenv";
+dotenv.config();
+import cors from "cors";
 import mongoose from "mongoose";
 import router from "./routes/index.js";
 import express from "express";
-dotenv.config();
+import { cloudinary } from "./config/index.js";
 const app = express();
 app.use(express.json());
 const allowedOrigins = [
@@ -25,6 +26,11 @@ app.use(cors({
     allowedHeaders: ["Content-Type", "Authorization"],
     exposedHeaders: ["Set-Cookie"],
 }));
+cloudinary.v2.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 app.get("/", async (req, res) => {
     res.send("Happy Coding 🚀");
 });

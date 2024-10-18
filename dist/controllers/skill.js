@@ -1,4 +1,6 @@
 import Skill from "../models/skill.js";
+import { cloudinary } from "../config/index.js";
+import getPublicIdFromUrl from "../utils/index.js";
 // const imageUrl = "https://obaidbro.vercel.app";
 /**
  * Get all skills from the database.
@@ -36,8 +38,9 @@ const getSkills = async (req, res, next) => {
  */
 const createSkill = async (req, res, next) => {
     try {
-        const { icon, name, description, proficiency } = req.body;
-        if (!name || !description || !proficiency) {
+        const { name, description, proficiency } = req.body;
+        const icon = req.file?.path;
+        if (!icon || !name || !description || !proficiency) {
             throw new Error("All fields are required");
         }
         const existingSkill = await Skill.findOne({ name });
@@ -71,11 +74,21 @@ const createSkill = async (req, res, next) => {
 const updateSkill = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { icon, name, description, proficiency } = req.body;
+        const { name, description, proficiency } = req.body;
+        const icon = req.file?.path;
         const skill = await Skill.findById(id);
         if (!skill) {
             throw new Error("Skill not found");
         }
+        const publicId = getPublicIdFromUrl(skill.icon);
+        if (!publicId) {
+            throw new Error("Invalid image URL");
+        }
+        cloudinary.v2.uploader.destroy(publicId, (error, result) => {
+            if (error) {
+                return next(error);
+            }
+        });
         await Skill.findByIdAndUpdate(id, { icon, name, description, proficiency }, { new: true, runValidators: true });
         res.status(200).json({
             success: true,
@@ -102,6 +115,15 @@ const deleteSkill = async (req, res, next) => {
         if (!deletedSkill) {
             throw new Error("Skill not found");
         }
+        const publicId = getPublicIdFromUrl(deletedSkill.icon);
+        if (!publicId) {
+            throw new Error("Invalid image URL");
+        }
+        cloudinary.v2.uploader.destroy(publicId, (error, result) => {
+            if (error) {
+                return next(error);
+            }
+        });
         res
             .status(200)
             .json({ success: true, message: "Skill deleted successfully" });
