@@ -96,20 +96,22 @@ const updateProject = async (req, res, next) => {
     try {
         const { id } = req.params;
         const { name, type, tech, description, link } = req.body;
-        const image = req.file?.path;
+        // Find the existing project
         const project = await Project.findById(id);
         if (!project) {
             throw new Error("Project not found");
         }
-        const publicId = getPublicIdFromUrl(project.image);
-        if (!publicId) {
-            throw new Error("Invalid image URL");
-        }
-        cloudinary.v2.uploader.destroy(publicId, (error, result) => {
-            if (error) {
-                return next(error);
+        let image = project.image;
+        if (req.file) {
+            image = req.file.path;
+            const publicId = getPublicIdFromUrl(project.image);
+            if (publicId) {
+                await cloudinary.v2.uploader.destroy(publicId);
             }
-        });
+            else {
+                throw new Error("Invalid image URL");
+            }
+        }
         await Project.findByIdAndUpdate(id, { image, name, type, tech, description, link }, { new: true, runValidators: true });
         res.status(200).json({
             success: true,

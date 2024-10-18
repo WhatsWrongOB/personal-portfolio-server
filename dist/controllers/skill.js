@@ -75,20 +75,21 @@ const updateSkill = async (req, res, next) => {
     try {
         const { id } = req.params;
         const { name, description, proficiency } = req.body;
-        const icon = req.file?.path;
         const skill = await Skill.findById(id);
         if (!skill) {
             throw new Error("Skill not found");
         }
-        const publicId = getPublicIdFromUrl(skill.icon);
-        if (!publicId) {
-            throw new Error("Invalid image URL");
-        }
-        cloudinary.v2.uploader.destroy(publicId, (error, result) => {
-            if (error) {
-                return next(error);
+        let icon = skill.icon;
+        if (req.file) {
+            icon = req.file.path;
+            const publicId = getPublicIdFromUrl(skill.icon);
+            if (publicId) {
+                await cloudinary.v2.uploader.destroy(publicId);
             }
-        });
+            else {
+                throw new Error("Invalid image URL");
+            }
+        }
         await Skill.findByIdAndUpdate(id, { icon, name, description, proficiency }, { new: true, runValidators: true });
         res.status(200).json({
             success: true,
