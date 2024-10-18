@@ -53,7 +53,7 @@ const createSkill = async (
     const { name, description, proficiency } = req.body;
 
     const icon = req.file?.path;
-
+ 
     if (!icon || !name || !description || !proficiency) {
       throw new Error("All fields are required");
     }
