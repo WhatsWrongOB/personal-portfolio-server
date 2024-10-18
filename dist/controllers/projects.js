@@ -1,6 +1,7 @@
 import Project from "../models/project.js";
 import { cloudinary } from "../config/index.js";
 import getPublicIdFromUrl from "../utils/index.js";
+import { myCache } from "../index.js";
 /**
  * Get all projects from the database.
  *
@@ -12,10 +13,22 @@ import getPublicIdFromUrl from "../utils/index.js";
  */
 const getProjects = async (req, res, next) => {
     try {
+        const cacheKey = "projects";
+        const cachedProjects = myCache.get(cacheKey);
+        if (cachedProjects) {
+            console.log("Serving from cache");
+            res.status(200).json({
+                success: true,
+                totalProjects: cachedProjects.length,
+                projects: cachedProjects,
+            });
+            return;
+        }
         const projects = await Project.find();
         if (!projects || projects.length === 0) {
             throw new Error("No projects found");
         }
+        myCache.set(cacheKey, projects);
         res.status(200).json({
             success: true,
             totalProjects: projects.length,

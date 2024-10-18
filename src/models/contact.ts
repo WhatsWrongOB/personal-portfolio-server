@@ -1,10 +1,7 @@
 import { Schema, model } from "mongoose";
+import { Message } from "../types";
 
-interface Message {
-  username: string;
-  email: string;
-  message: string;
-}
+
 
 const contactSchema = new Schema<Message>({
   username: {

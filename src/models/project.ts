@@ -1,13 +1,6 @@
 import { Schema, model } from "mongoose";
+import { Project } from "../types/index.js";
 
-interface Project {
-  image: string;
-  name: string;
-  tech: string;
-  type: string;
-  description: string;
-  link: string;
-}
 
 const projectSchema = new Schema<Project>({
   image: {

@@ -1,6 +1,7 @@
 import Skill from "../models/skill.js";
 import { cloudinary } from "../config/index.js";
 import getPublicIdFromUrl from "../utils/index.js";
+import { myCache } from "../index.js";
 // const imageUrl = "https://obaidbro.vercel.app";
 /**
  * Get all skills from the database.
@@ -13,10 +14,22 @@ import getPublicIdFromUrl from "../utils/index.js";
  */
 const getSkills = async (req, res, next) => {
     try {
+        const cacheKey = "skills";
+        const cachedSkills = myCache.get(cacheKey);
+        if (cachedSkills) {
+            console.log("Serving from cache");
+            res.status(200).json({
+                success: true,
+                totalSkills: cachedSkills.length,
+                skills: cachedSkills,
+            });
+            return;
+        }
         const skills = await Skill.find();
         if (!skills || skills.length === 0) {
             throw new Error("No skills found");
         }
+        myCache.set(cacheKey, skills);
         res.status(200).json({
             success: true,
             totalSkills: skills.length,

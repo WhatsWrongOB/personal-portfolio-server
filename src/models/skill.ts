@@ -1,11 +1,6 @@
 import { Schema, model } from "mongoose";
+import { Skill } from "../types/index.js";
 
-interface Skill {
-  icon: string;
-  name: string;
-  description: string;
-  proficiency: string;
-}
 
 const skillSchema = new Schema<Skill>({
   icon: {

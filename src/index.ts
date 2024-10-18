@@ -1,12 +1,16 @@
 import dotenv from "dotenv";
 dotenv.config();
+
 import cors from "cors";
 import mongoose from "mongoose";
+import NodeCache from "node-cache";
 import router from "./routes/index.js";
+import { cloudinary } from "./config/index.js";
 import express, { Request, NextFunction, Response, Application } from "express";
-import { cloudinary, upload } from "./config/index.js";
 
 const app: Application = express();
+const myCache = new NodeCache({ stdTTL: 3600 });
+
 app.use(express.json());
 
 const allowedOrigins: string[] = [
@@ -73,3 +77,4 @@ app.use((err: MyError, req: Request, res: Response, next: NextFunction) => {
 });
 
 export default app;
+export {myCache}

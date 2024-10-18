@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import Skill from "../models/skill.js";
 import { cloudinary } from "../config/index.js";
 import getPublicIdFromUrl from "../utils/index.js";
+import { myCache } from "../index.js";
+import { Skill as SkillType } from "../types/index.js";
 
 // const imageUrl = "https://obaidbro.vercel.app";
 
@@ -14,17 +16,34 @@ import getPublicIdFromUrl from "../utils/index.js";
  * @param {NextFunction} next - Express next middleware function
  * @returns {Promise<void>} - Returns a list of skills or an error message
  */
-
 const getSkills = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
+    const cacheKey = "skills";
+
+    const cachedSkills = myCache.get<SkillType[]>(cacheKey);
+
+    if (cachedSkills) {
+      console.log("Serving from cache");
+      res.status(200).json({
+        success: true,
+        totalSkills: cachedSkills.length,
+        skills: cachedSkills,
+      });
+      return
+    }
+
     const skills = await Skill.find();
+
     if (!skills || skills.length === 0) {
       throw new Error("No skills found");
     }
+
+    myCache.set(cacheKey, skills);
+
     res.status(200).json({
       success: true,
       totalSkills: skills.length,
@@ -53,7 +72,7 @@ const createSkill = async (
     const { name, description, proficiency } = req.body;
 
     const icon = req.file?.path;
- 
+
     if (!icon || !name || !description || !proficiency) {
       throw new Error("All fields are required");
     }
