@@ -155,7 +155,7 @@ const updateProject = async (
 
       const publicId = getPublicIdFromUrl(project.image);
       if (publicId) {
-        await cloudinary.v2.uploader.destroy(publicId);
+        await cloudinary.v2.uploader.destroy(`uploads/${publicId}`);
       } else {
         throw new Error("Invalid image URL");
       }
@@ -208,11 +208,7 @@ const deleteProject = async (
       throw new Error("Invalid image URL");
     }
 
-    cloudinary.v2.uploader.destroy(publicId, (error, result) => {
-      if (error) {
-        return next(error);
-      }
-    });
+    await cloudinary.v2.uploader.destroy(`uploads/${publicId}`);
 
     const cacheKey = "projects";
 

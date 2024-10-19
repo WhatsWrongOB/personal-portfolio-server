@@ -2,16 +2,15 @@ import Skill from "../models/skill.js";
 import { cloudinary } from "../config/index.js";
 import getPublicIdFromUrl from "../utils/index.js";
 import { myCache } from "../index.js";
-// const imageUrl = "https://obaidbro.vercel.app";
 /**
- * Get all skills from the database.
- *
- * @function getSkills
- * @param {Request} req - Express request object
- * @param {Response} res - Express response object
- * @param {NextFunction} next - Express next middleware function
- * @returns {Promise<void>} - Returns a list of skills or an error message
- */
+* Get all skills from the database.
+*
+* @function getSkills
+* @param {Request} req - Express request object
+* @param {Response} res - Express response object
+* @param {NextFunction} next - Express next middleware function
+* @returns {Promise<void>} - Returns a list of skills or an error message
+*/
 const getSkills = async (req, res, next) => {
     try {
         const cacheKey = "skills";
@@ -99,7 +98,7 @@ const updateSkill = async (req, res, next) => {
             icon = req.file.path;
             const publicId = getPublicIdFromUrl(skill.icon);
             if (publicId) {
-                await cloudinary.v2.uploader.destroy(publicId);
+                await cloudinary.v2.uploader.destroy(`uploads/${publicId}`);
             }
             else {
                 throw new Error("Invalid image URL");
@@ -137,11 +136,7 @@ const deleteSkill = async (req, res, next) => {
         if (!publicId) {
             throw new Error("Invalid image URL");
         }
-        cloudinary.v2.uploader.destroy(publicId, (error, result) => {
-            if (error) {
-                return next(error);
-            }
-        });
+        await cloudinary.v2.uploader.destroy(`uploads/${publicId}`);
         const cacheKey = "skills";
         myCache.del(cacheKey);
         res
