@@ -33,7 +33,7 @@ const getSkills = async (
         totalSkills: cachedSkills.length,
         skills: cachedSkills,
       });
-      return
+      return;
     }
 
     const skills = await Skill.find();
@@ -89,6 +89,10 @@ const createSkill = async (
       proficiency,
     });
 
+    const cacheKey = "skills";
+
+    myCache.del(cacheKey);
+
     res.status(201).json({
       success: true,
       message: "Skill created successfully",
@@ -139,6 +143,10 @@ const updateSkill = async (
       { new: true, runValidators: true }
     );
 
+    const cacheKey = "skills";
+
+    myCache.del(cacheKey);
+
     res.status(200).json({
       success: true,
       message: "Skill updated successfully",
@@ -182,6 +190,10 @@ const deleteSkill = async (
         return next(error);
       }
     });
+
+    const cacheKey = "skills";
+
+    myCache.del(cacheKey);
 
     res
       .status(200)

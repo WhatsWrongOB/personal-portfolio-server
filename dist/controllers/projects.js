@@ -88,6 +88,8 @@ const createProject = async (req, res, next) => {
             description,
             link,
         });
+        const cacheKey = "projects";
+        myCache.del(cacheKey);
         res
             .status(201)
             .json({ success: true, message: "Project created successfully" });
@@ -126,6 +128,8 @@ const updateProject = async (req, res, next) => {
             }
         }
         await Project.findByIdAndUpdate(id, { image, name, type, tech, description, link }, { new: true, runValidators: true });
+        const cacheKey = "projects";
+        myCache.del(cacheKey);
         res.status(200).json({
             success: true,
             message: "Project updated successfully",
@@ -160,6 +164,8 @@ const deleteProject = async (req, res, next) => {
                 return next(error);
             }
         });
+        const cacheKey = "projects";
+        myCache.del(cacheKey);
         res
             .status(200)
             .json({ success: true, message: "Project deleted successfully" });

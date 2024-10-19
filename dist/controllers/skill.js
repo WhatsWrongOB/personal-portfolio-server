@@ -66,6 +66,8 @@ const createSkill = async (req, res, next) => {
             description,
             proficiency,
         });
+        const cacheKey = "skills";
+        myCache.del(cacheKey);
         res.status(201).json({
             success: true,
             message: "Skill created successfully",
@@ -104,6 +106,8 @@ const updateSkill = async (req, res, next) => {
             }
         }
         await Skill.findByIdAndUpdate(id, { icon, name, description, proficiency }, { new: true, runValidators: true });
+        const cacheKey = "skills";
+        myCache.del(cacheKey);
         res.status(200).json({
             success: true,
             message: "Skill updated successfully",
@@ -138,6 +142,8 @@ const deleteSkill = async (req, res, next) => {
                 return next(error);
             }
         });
+        const cacheKey = "skills";
+        myCache.del(cacheKey);
         res
             .status(200)
             .json({ success: true, message: "Skill deleted successfully" });

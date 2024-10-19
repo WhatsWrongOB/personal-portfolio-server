@@ -26,7 +26,7 @@ const getProjects = async (
 
     if (cachedProjects) {
       console.log("Serving from cache");
-       res.status(200).json({
+      res.status(200).json({
         success: true,
         totalProjects: cachedProjects.length,
         projects: cachedProjects,
@@ -112,6 +112,10 @@ const createProject = async (
       link,
     });
 
+    const cacheKey = "projects";
+
+    myCache.del(cacheKey);
+
     res
       .status(201)
       .json({ success: true, message: "Project created successfully" });
@@ -163,6 +167,10 @@ const updateProject = async (
       { new: true, runValidators: true }
     );
 
+    const cacheKey = "projects";
+
+    myCache.del(cacheKey);
+
     res.status(200).json({
       success: true,
       message: "Project updated successfully",
@@ -205,6 +213,11 @@ const deleteProject = async (
         return next(error);
       }
     });
+
+    const cacheKey = "projects";
+
+    myCache.del(cacheKey);
+
     res
       .status(200)
       .json({ success: true, message: "Project deleted successfully" });
