@@ -5,6 +5,7 @@ interface Project {
   type: string;
   description: string;
   link: string;
+  priority: Number;
 }
 
 interface Skill {

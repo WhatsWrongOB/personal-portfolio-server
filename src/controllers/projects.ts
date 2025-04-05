@@ -25,7 +25,6 @@ const getProjects = async (
     const cachedProjects = myCache.get<ProjectType[]>(cacheKey);
 
     if (cachedProjects) {
-      console.log("Serving from cache");
       res.status(200).json({
         success: true,
         totalProjects: cachedProjects.length,
@@ -34,7 +33,7 @@ const getProjects = async (
       return;
     }
 
-    const projects = await Project.find();
+    const projects = await Project.find().sort({ priority: -1 });
 
     if (!projects || projects.length === 0) {
       throw new Error("No projects found");
@@ -96,10 +95,18 @@ const createProject = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { name, type, tech, description, link } = req.body;
+    const { name, type, tech, description, link, priority } = req.body;
     const image = req.file?.path;
 
-    if (!image || !name || !type || !tech || !description || !link) {
+    if (
+      !image ||
+      !name ||
+      !type ||
+      !tech ||
+      !description ||
+      !link ||
+      !priority
+    ) {
       throw new Error("All fields are required");
     }
 
@@ -110,6 +117,7 @@ const createProject = async (
       tech,
       description,
       link,
+      priority,
     });
 
     const cacheKey = "projects";
@@ -140,7 +148,7 @@ const updateProject = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const { name, type, tech, description, link } = req.body;
+    const { name, type, tech, description, link, priority } = req.body;
 
     // Find the existing project
     const project = await Project.findById(id);
@@ -163,7 +171,7 @@ const updateProject = async (
 
     await Project.findByIdAndUpdate(
       id,
-      { image, name, type, tech, description, link },
+      { image, name, type, tech, description, link, priority },
       { new: true, runValidators: true }
     );
 

@@ -29,6 +29,10 @@ const projectSchema = new Schema<Project>({
     type: String,
     required: true,
   },
+  priority: {
+    type: Number,
+    required: true,
+  },
 });
 
 const Project = model<Project>("Projects", projectSchema);
