@@ -16,7 +16,6 @@ const getProjects = async (req, res, next) => {
         const cacheKey = "projects";
         const cachedProjects = myCache.get(cacheKey);
         if (cachedProjects) {
-            console.log("Serving from cache");
             res.status(200).json({
                 success: true,
                 totalProjects: cachedProjects.length,
@@ -24,7 +23,7 @@ const getProjects = async (req, res, next) => {
             });
             return;
         }
-        const projects = await Project.find();
+        const projects = await Project.find().sort({ priority: -1 });
         if (!projects || projects.length === 0) {
             throw new Error("No projects found");
         }
@@ -75,9 +74,15 @@ const getProjectById = async (req, res, next) => {
  */
 const createProject = async (req, res, next) => {
     try {
-        const { name, type, tech, description, link } = req.body;
+        const { name, type, tech, description, link, priority } = req.body;
         const image = req.file?.path;
-        if (!image || !name || !type || !tech || !description || !link) {
+        if (!image ||
+            !name ||
+            !type ||
+            !tech ||
+            !description ||
+            !link ||
+            !priority) {
             throw new Error("All fields are required");
         }
         await Project.create({
@@ -87,6 +92,7 @@ const createProject = async (req, res, next) => {
             tech,
             description,
             link,
+            priority,
         });
         const cacheKey = "projects";
         myCache.del(cacheKey);
@@ -110,7 +116,7 @@ const createProject = async (req, res, next) => {
 const updateProject = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { name, type, tech, description, link } = req.body;
+        const { name, type, tech, description, link, priority } = req.body;
         // Find the existing project
         const project = await Project.findById(id);
         if (!project) {
@@ -127,7 +133,7 @@ const updateProject = async (req, res, next) => {
                 throw new Error("Invalid image URL");
             }
         }
-        await Project.findByIdAndUpdate(id, { image, name, type, tech, description, link }, { new: true, runValidators: true });
+        await Project.findByIdAndUpdate(id, { image, name, type, tech, description, link, priority }, { new: true, runValidators: true });
         const cacheKey = "projects";
         myCache.del(cacheKey);
         res.status(200).json({

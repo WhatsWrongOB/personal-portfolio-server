@@ -26,6 +26,10 @@ const projectSchema = new Schema({
         type: String,
         required: true,
     },
+    priority: {
+        type: Number,
+        required: true,
+    },
 });
 const Project = model("Projects", projectSchema);
 export default Project;
